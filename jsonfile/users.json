@@ -1,0 +1,11 @@
+[
+  {
+    "user_id": 1,
+    "user_name": "Ali",
+    "user_email": "ali@gmail.com",
+    "user_imageUrl": "https://m.media-amazon.com/images/I/81S-ekaE+vS._AC_UL320_.jpg",
+    "user_password": "1899",
+    "user_confirmPassword": "1899",
+    "user_bio": "799"
+  }
+]

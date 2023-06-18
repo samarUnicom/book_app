@@ -1,0 +1,64 @@
+[
+  {
+    "book_id": 1,
+    "book_name": "Also a Poet: Frank O'Hara, My Father, and Me by Ada Calhoun",
+    "book_author": "Grove Atlantic",
+    "book_author_img": "https://img.freepik.com/premium-photo/young-handsome-man-with-beard-isolated-keeping-arms-crossed-frontal-position_1368-132662.jpg",
+    "book_imageUrl": "https://www.capradio.org/media/12267168/grove.jpg?width=500&height=751",
+    "book_link": "0",
+    "book_commit": "0",
+    "book_bio": "Also a Poet is a moving account of Ada Calhoun's attempt to connect with her elusive father, art critic Peter Schjeldahl, by trying to complete his abandoned biography of the beloved New York poet, Frank O'Hara. Calhoun recalls how",
+    "book_rating": 4.3,
+    "book_publishDate": "10:00 6-6-2023"
+  },
+  {
+    "book_id": 2,
+    "book_name": "Constructing a Nervous System: A Memoir by Margo Jefferson",
+    "book_author": "Penguin Random House",
+    "book_author_img": "https://img.freepik.com/premium-photo/young-handsome-man-with-beard-isolated-keeping-arms-crossed-frontal-position_1368-132662.jpg",
+    "book_imageUrl": "https://www.capradio.org/media/12267169/nervous.jpg?width=298&height=450",
+    "book_link": "0",
+    "book_commit": "0",
+    "book_bio": "Renowned critic Margo Jefferson's book, Constructing a Nervous System, is also a virtuoso fusion of different forms: memoir, quick riffs and cultural criticism. As one of the few prominent African American female critics of her generation",
+    "book_rating": 2.5,
+    "book_publishDate": "10:00 6-6-2023"
+  }
+,
+  {
+    "book_id": 3,
+    "book_name": "The Facemaker by Lindsey Fitzharris",
+    "book_author": "Macmillan",
+    "book_author_img": "https://img.freepik.com/premium-photo/young-handsome-man-with-beard-isolated-keeping-arms-crossed-frontal-position_1368-132662.jpg",
+    "book_imageUrl": "https://www.capradio.org/media/12267170/facemaker.jpg?width=500&height=750",
+    "book_link": "0",
+    "book_commit": "0",
+    "book_bio": "The Facemaker, by medical historian Lindsey Fitzharris, tells the story of British surgeon Harold Gillies' pioneering work in reconstructing the faces of some of the estimated 280,000 men who suffered facial trauma during World War",
+    "book_rating": 3.0,
+    "book_publishDate": "10:00 6-6-2023"
+  }
+,
+  {
+    "book_id": 4,
+    "book_name": "The Revolutionary: Samuel Adams by Stacey Schiff",
+    "book_author": "Little, Brown",
+    "book_author_img": "https://img.freepik.com/premium-photo/young-handsome-man-with-beard-isolated-keeping-arms-crossed-frontal-position_1368-132662.jpg",
+    "book_imageUrl": "https://www.capradio.org/media/12267170/facemaker.jpg?width=500&height=750",
+    "book_link": "0",
+    "book_commit": "0",
+    "book_bio": "Stacy Schiff's biography of Samuel Adams is a thrilling, timely account of how the American Revolution happened: how the colonists were radicalized and came to think of themselves, not as Bostonians or Virginians",
+    "book_rating": 4.2,
+    "book_publishDate": "10:00 6-6-2023"
+  },
+  {
+    "book_id": 5,
+    "book_name": "Signal Fires: A Novel by Dani Shapiro",
+    "book_author": "Penguin Random House",
+    "book_author_img": "https://img.freepik.com/premium-photo/young-handsome-man-with-beard-isolated-keeping-arms-crossed-frontal-position_1368-132662.jpg",
+    "book_imageUrl": "https://www.capradio.org/media/12267172/signal.jpg?width=500&height=760",
+    "book_link": "0",
+    "book_commit": "0",
+    "book_bio": "Dani Shapiro's profound new novel jumps around in time to piece together the story of three teenagers, a car accident, two families and what persists even after neighborhoods change, people grow old",
+    "book_rating": 4.5,
+    "book_publishDate": "10:00 6-6-2023"
+  }
+]
