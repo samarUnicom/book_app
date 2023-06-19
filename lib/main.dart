@@ -28,16 +28,16 @@ List<CommitModel> data = [
       bookId: 1,
       commitDate: "21-03-2022",
       userImg:
-          "https://img.freepik.com/premium-photo/young-handsome-man-with-beard-isolated-keeping-arms-crossed-frontal-position_1368-132662.jpg"),
+          "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/social-media-profile-photos-3.jpg"),
   CommitModel(
       commitId: "wq",
       commit: "hi",
       userId: "2",
-      userName: "samar",
+      userName: "sarah",
       bookId: 1,
       commitDate: "21-03-2022",
       userImg:
-          "https://img.freepik.com/premium-photo/young-handsome-man-with-beard-isolated-keeping-arms-crossed-frontal-position_1368-132662.jpg")
+          "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg")
 ];
 
 class MyApp extends StatelessWidget {

@@ -69,7 +69,6 @@ class CommitRemoteDataSourceImpl implements CommitRemoteDataSource {
       print(bookModelsToJson);
       await sharedPreferences.setString(
           FILE_PATH, json.encode(bookModelsToJson));
-
     } else {
       throw ServerException();
     }
@@ -77,7 +76,6 @@ class CommitRemoteDataSourceImpl implements CommitRemoteDataSource {
 
   @override
   addDumpCommit(List<CommitModel> commits) async {
-
     List commitModelsToJson =
         commits.map<Map<String, dynamic>>((model) => model.toJson()).toList();
     sharedPreferences.setString(FILE_PATH, json.encode(commitModelsToJson));
