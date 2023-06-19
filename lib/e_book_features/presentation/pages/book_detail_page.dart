@@ -19,14 +19,34 @@ import '../widgets/books_page/commit_card_widget.dart';
 import '../widgets/books_page/message_display_widget.dart';
 import '../widgets/books_page/text_button_widget.dart';
 
-class BookDetailPage extends StatelessWidget {
+class BookDetailPage extends StatefulWidget {
   BookDetailPage({
     super.key,
     required this.book,
   });
 
   final BookModel book;
+  @override
+  _BookDetailPageState createState() => _BookDetailPageState();
+}
 
+class _BookDetailPageState extends State<BookDetailPage> {
+  final _formsendKey = GlobalKey<FormState>();
+  FocusNode focusNode = FocusNode();
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    BlocProvider.of<CommitBloc>(context)
+        .add(GetBookCommitsEvent(book_id: widget.book.bookId!));
+    focusNode.addListener(() {
+      print('1:  ${focusNode.hasFocus}');
+      BlocProvider.of<CommitBloc>(context)
+          .add(GetBookCommitsEvent(book_id: widget.book.bookId!));
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,8 +54,12 @@ class BookDetailPage extends StatelessWidget {
         minExtent: 40.h,
         useSafeArea: false,
         curve: Curves.easeIn,
-        previewWidget: _expandedWidget(context),
-        expandedWidget: _expandedWidget(context),
+        previewWidget: _expandedWidget(
+          context,
+        ),
+        expandedWidget: _expandedWidget(
+          context,
+        ),
         collapsed: true,
         backgroundWidget: buildCustomScrollView(context),
         duration: const Duration(milliseconds: 10),
@@ -45,11 +69,11 @@ class BookDetailPage extends StatelessWidget {
     );
   }
 
-  final _formKey = GlobalKey<FormState>();
-  Widget _expandedWidget(context) {
+  Widget _expandedWidget(
+    context,
+  ) {
     TextEditingController _commetController = TextEditingController();
-    BlocProvider.of<CommitBloc>(context)
-        .add(GetBookCommitsEvent(book_id: book.bookId!));
+
     return Material(
       borderRadius: BorderRadius.only(
           topRight: Radius.circular(10), topLeft: Radius.circular(10)),
@@ -68,15 +92,7 @@ class BookDetailPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          Expanded(
-              child: /*BlocProvider(
-                create: (context) => CommitBloc(
-                    getAllCommits: sl(),
-                    addCommitUseCase: sl(),
-                    initialCommitUseCase: sl())
-                  ..add(GetBookCommitsEvent(book_id: book.bookId!)),
-                child:*/
-                  BlocBuilder<CommitBloc, CommitState>(
+          Expanded(child: BlocBuilder<CommitBloc, CommitState>(
             builder: (context, state) {
               if (state is LoadingCommitState) {
                 return LoadingWidget();
@@ -102,81 +118,79 @@ class BookDetailPage extends StatelessWidget {
               return LoadingWidget();
             },
           )),
-          //  ),
           Padding(
             padding: EdgeInsets.all(16.sp),
             child: Container(
                 height: 45,
                 width: MediaQuery.of(context).size.width,
                 color: Colors.white,
-                child: BlocBuilder<CommitBloc, CommitState>(
-                    builder: (context1, state) {
-                  return BlocConsumer<CommitBloc, CommitState>(
-                      listener: (context, state) {
-                    if (state is MessageAddCommitState) {
-                      BlocProvider.of<CommitBloc>(context1)
-                          .add(GetBookCommitsEvent(book_id: book.bookId!));
-                      SnackBarMessage().showSuccessSnackBar(
-                          message: state.message, context: context);
-                    } else if (state is ErrorAddCommitState) {
-                      SnackBarMessage().showErrorSnackBar(
-                          message: state.message, context: context);
-                    }
-                  }, builder: (context, state) {
-                    if (state is LoadingAddCommitState) {
-                      return LoadingWidget();
-                    }
-                    return Form(
-                      key: _formKey,
-                      child: TextFormField(
-                        controller: _commetController,
-                        validator: (val) =>
-                            val!.isEmpty ? " Can't be empty" : null,
-                        decoration: InputDecoration(
-                          suffixIcon: MaterialButton(
-                            color: Colors.deepPurpleAccent,
-                            onPressed: () async {
-                              UserModel c = await UserLocalDataSourceImpl(
-                                      sharedPreferences: sl())
-                                  .getUser();
-                              var xid = Xid();
-                              var date = DateTime.now().toString();
-                              var dateParse = DateTime.parse(date);
-                              var formattedDate =
-                                  "${dateParse.day}-${dateParse.month}-${dateParse.year}";
-                              final isValid = _formKey.currentState!.validate();
-                              print(formattedDate);
-                              if (isValid) {
-                                BlocProvider.of<CommitBloc>(context).add(
-                                    AddCommitEvent(
-                                        commitModel: CommitModel(
-                                            commitId: "$xid",
-                                            userId: c.userId,
-                                            userImg: c.userImageUrl,
-                                            userName: c.userName,
-                                            bookId: book.bookId,
-                                            commit: _commetController.text,
-                                            commitDate: "$formattedDate")));
-                                _commetController.clear();
-                              }
-                            },
-                            child: Icon(
-                              Icons.send,
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                            // backgroundColor: ColorConstant.lightBlueA100,
-                            elevation: 0,
+                child: BlocConsumer<CommitBloc, CommitState>(
+                    listener: (context, state) {
+                  if (state is MessageAddCommitState) {
+                    BlocProvider.of<CommitBloc>(context)
+                        .add(GetBookCommitsEvent(book_id: widget.book.bookId!));
+                    SnackBarMessage().showSuccessSnackBar(
+                        message: state.message, context: context);
+                  } else if (state is ErrorAddCommitState) {
+                    SnackBarMessage().showErrorSnackBar(
+                        message: state.message, context: context);
+                  }
+                }, builder: (context, state) {
+                  if (state is LoadingAddCommitState) {
+                    return LoadingWidget();
+                  }
+                  return Form(
+                    key: _formsendKey,
+                    child: TextFormField(
+                      controller: _commetController,
+                      focusNode: focusNode,
+                      validator: (val) =>
+                          val!.isEmpty ? " Can't be empty" : null,
+                      decoration: InputDecoration(
+                        suffixIcon: MaterialButton(
+                          color: Colors.deepPurpleAccent,
+                          onPressed: () async {
+                            UserModel c = await UserLocalDataSourceImpl(
+                                    sharedPreferences: sl())
+                                .getUser();
+                            var xid = Xid();
+                            var date = DateTime.now().toString();
+                            var dateParse = DateTime.parse(date);
+                            var formattedDate =
+                                "${dateParse.day}-${dateParse.month}-${dateParse.year}";
+                            final isValid =
+                                _formsendKey.currentState!.validate();
+                            print(formattedDate);
+                            if (isValid) {
+                              BlocProvider.of<CommitBloc>(context).add(
+                                  AddCommitEvent(
+                                      commitModel: CommitModel(
+                                          commitId: "$xid",
+                                          userId: c.userId,
+                                          userImg: c.userImageUrl,
+                                          userName: c.userName,
+                                          bookId: widget.book.bookId,
+                                          commit: _commetController.text,
+                                          commitDate: "$formattedDate")));
+                              _commetController.clear();
+                            }
+                          },
+                          child: Icon(
+                            Icons.send,
+                            color: Colors.white,
+                            size: 18,
                           ),
-                          hintText: "Add Reviwe...",
-                          hintStyle: TextStyle(color: Colors.deepPurpleAccent),
-                          border: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.deepPurpleAccent)),
+                          // backgroundColor: ColorConstant.lightBlueA100,
+                          elevation: 0,
                         ),
+                        hintText: "Add Reviwe...",
+                        hintStyle: TextStyle(color: Colors.deepPurpleAccent),
+                        border: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.deepPurpleAccent)),
                       ),
-                    );
-                  });
+                    ),
+                  );
                 })),
           ),
         ],
@@ -195,7 +209,7 @@ class BookDetailPage extends StatelessWidget {
             minimumExtent: kToolbarHeight * 4,
             childBuilder: (percent) {
               return BookDetailHeader(
-                book: book,
+                book: widget.book,
                 percent: percent,
               );
             },
@@ -226,8 +240,8 @@ class BookDetailPage extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5),
                               child: BookRateStars(
-                                rate: book.bookRating!,
-                                heroTag: book.bookName,
+                                rate: widget.book.bookRating!,
+                                heroTag: widget.book.bookName,
                               ),
                             ),
                           ],
@@ -245,7 +259,7 @@ class BookDetailPage extends StatelessWidget {
                 ),
                 SizedBox(height: 2.h),
                 Text(
-                  book.bookBio!,
+                  widget.book.bookBio!,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
