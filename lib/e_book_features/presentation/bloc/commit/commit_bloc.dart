@@ -33,13 +33,13 @@ class CommitBloc extends Bloc<CommitEvent, CommitState> {
             await addCommitUseCase.call(event.commitModel);
 
         emit(_eitherDoneMessageOrErrorState(failureOrDoneMessage, "Done"));
-      } else if (event is GetCommitsEvent) {
+      } /*else if (event is GetCommitsEvent) {
         print("fgsoiosieru");
         emit(LoadingCommitState());
         final failureOrBooks = await initialCommitUseCase(event.comments);
         emit(
             _eitherDoneMessageOrErrorState(failureOrBooks, "done insert data"));
-      }
+      }*/
     });
   }
 

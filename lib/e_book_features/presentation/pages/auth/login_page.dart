@@ -9,6 +9,9 @@ import 'package:book_app/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../main.dart';
+import '../../../data/datasources/commit_data_source/commit_remote_data_source.dart';
+
 class LoginPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _emailController = TextEditingController();
@@ -152,6 +155,10 @@ class LoginPage extends StatelessWidget {
                                 .getUser();
                             if (c.userEmail == _emailController.text &&
                                 c.userPassword == _passwordController.text) {
+                              await CommitRemoteDataSourceImpl(sharedPreferences: sl())
+                                  .addDumpCommit(data);
+                           /*   await CommitRemoteDataSourceImpl(sharedPreferences: sl())
+                                  .getAllCommit(1);*/
                               SnackBarMessage().showSuccessSnackBar(
                                   message: "Logged in Successfully",
                                   context: context);

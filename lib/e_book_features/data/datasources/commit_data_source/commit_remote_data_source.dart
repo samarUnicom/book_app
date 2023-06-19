@@ -22,25 +22,24 @@ class CommitRemoteDataSourceImpl implements CommitRemoteDataSource {
   CommitRemoteDataSourceImpl({required this.sharedPreferences});
   @override
   Future<List<CommitModel>> getAllCommit(int book_id) async {
-    if (statusCode == 200) {
-      final jsondata = await rootBundle.rootBundle
-          .loadString(sharedPreferences.getString(FILE_PATH)!);
-      print(jsondata);
-      final decodedJson = json.decode(jsondata) as List<dynamic>;
-
-      final List<CommitModel> commitModels = decodedJson
+    final jsonString = await sharedPreferences.getString(FILE_PATH);
+    if (jsonString != null) {
+      List decodeJsonData = json.decode(jsonString);
+      print("Loading list${decodeJsonData}");
+      List<CommitModel> jsonToCommitModels = decodeJsonData
           .map<CommitModel>((json) => CommitModel.fromJson(json))
           .toList();
       List<CommitModel> book_commits = [];
-      commitModels.forEach((element) {
+      jsonToCommitModels.forEach((element) {
         if (book_id == element.bookId) {
           book_commits.add(element);
         }
       });
-      print("ergsrsgtwgr${book_commits.length}");
-      return book_commits;
+      print(book_id);
+      print(book_commits.length);
+      return Future.value(book_commits);
     } else {
-      throw ServerException();
+      throw EmptyCacheException();
     }
   }
 
@@ -55,27 +54,22 @@ class CommitRemoteDataSourceImpl implements CommitRemoteDataSource {
           bookId: commitModel.bookId,
           commitDate: commitModel.commitDate,
           userImg: commitModel.userImg);
-
-      final jsondata = await rootBundle.rootBundle
-          .loadString(sharedPreferences.getString(FILE_PATH)!);
-
-      final decodedJson = json.decode(jsondata) as List<dynamic>;
-
+      final jsonString = sharedPreferences.getString(FILE_PATH);
+      final decodedJson = json.decode(jsonString!) as List<dynamic>;
+      print("listBeforAdd${decodedJson}");
       final List<CommitModel> commitModels = decodedJson
           .map<CommitModel>((json) => CommitModel.fromJson(json))
           .toList();
       print(commitModels.length);
       commitModels.add(newCommitModel);
-
+      print(commitModels.length);
       List bookModelsToJson = commitModels
           .map<Map<String, dynamic>>((CommitModel) => CommitModel.toJson())
           .toList();
+      print(bookModelsToJson);
+      await sharedPreferences.setString(
+          FILE_PATH, json.encode(bookModelsToJson));
 
-      final filepath = sharedPreferences.getString(FILE_PATH);
-      await File(filepath!).writeAsString(json.encode(bookModelsToJson));
-      final jsondata2 = await rootBundle.rootBundle
-          .loadString(sharedPreferences.getString(FILE_PATH)!);
-      print(jsondata2);
     } else {
       throw ServerException();
     }
@@ -83,15 +77,9 @@ class CommitRemoteDataSourceImpl implements CommitRemoteDataSource {
 
   @override
   addDumpCommit(List<CommitModel> commits) async {
-    final Directory directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory.path}/commit_file.json');
-    sharedPreferences.setString(
-        FILE_PATH, "${directory.path}/commit_file.json");
 
-    List bookModelsToJson = commits
-        .map<Map<String, dynamic>>((bookModel) => bookModel.toJson())
-        .toList();
-
-    await file.writeAsString(json.encode(bookModelsToJson));
+    List commitModelsToJson =
+        commits.map<Map<String, dynamic>>((model) => model.toJson()).toList();
+    sharedPreferences.setString(FILE_PATH, json.encode(commitModelsToJson));
   }
 }

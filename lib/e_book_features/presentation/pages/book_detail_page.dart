@@ -26,8 +26,7 @@ class BookDetailPage extends StatelessWidget {
   });
 
   final BookModel book;
-  final _formKey = GlobalKey<FormState>();
-  TextEditingController _commitController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,8 +45,8 @@ class BookDetailPage extends StatelessWidget {
     );
   }
 
+  final _formKey = GlobalKey<FormState>();
   Widget _expandedWidget(context) {
-    final _formKey = GlobalKey<FormState>();
     TextEditingController _commetController = TextEditingController();
     BlocProvider.of<CommitBloc>(context)
         .add(GetBookCommitsEvent(book_id: book.bookId!));
@@ -70,41 +69,40 @@ class BookDetailPage extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: /*BlocProvider(
+              child: /*BlocProvider(
                 create: (context) => CommitBloc(
                     getAllCommits: sl(),
                     addCommitUseCase: sl(),
                     initialCommitUseCase: sl())
                   ..add(GetBookCommitsEvent(book_id: book.bookId!)),
-                child:*/ BlocBuilder<CommitBloc, CommitState>(
-                  builder: (context, state) {
-                    print(";lk,gkgl");
-                    if (state is LoadingCommitState) {
-                      return LoadingWidget();
-                    } else if (state is LoadedCommitState) {
-                      print(state.commit.length);
-                      return state.commit.isEmpty
-                          ? Center(
-                              child: Text(" No Reviwes"),
-                            )
-                          : Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 8.0, left: 8.0),
-                              child: ListView.builder(
-                                  itemCount: state.commit.length,
-                                  shrinkWrap: true,
-                                  itemBuilder: (ctx, index) {
-                                    return CommitCardWidget(
-                                        commitModel: state.commit[index]);
-                                  }),
-                            );
-                    } else if (state is ErrorCommitState) {
-                      return MessageDisplayWidget(message: state.message);
-                    }
-                    return LoadingWidget();
-                  },
-                )),
-          //),
+                child:*/
+                  BlocBuilder<CommitBloc, CommitState>(
+            builder: (context, state) {
+              if (state is LoadingCommitState) {
+                return LoadingWidget();
+              } else if (state is LoadedCommitState) {
+                print(state.commit.length);
+                return state.commit.isEmpty
+                    ? Center(
+                        child: Text(" No Reviwes"),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+                        child: ListView.builder(
+                            itemCount: state.commit.length,
+                            shrinkWrap: true,
+                            itemBuilder: (ctx, index) {
+                              return CommitCardWidget(
+                                  commitModel: state.commit[index]);
+                            }),
+                      );
+              } else if (state is ErrorCommitState) {
+                return MessageDisplayWidget(message: state.message);
+              }
+              return LoadingWidget();
+            },
+          )),
+          //  ),
           Padding(
             padding: EdgeInsets.all(16.sp),
             child: Container(
@@ -129,66 +127,55 @@ class BookDetailPage extends StatelessWidget {
                       return LoadingWidget();
                     }
                     return Form(
-                        key: _formKey,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TextFormField(
-                                controller: _commetController,
-                                validator: (val) =>
-                                    val!.isEmpty ? " Can't be empty" : null,
-                                decoration: InputDecoration(
-                                  hintText: "Add Reviwe...",
-                                  hintStyle:
-                                      TextStyle(color: Colors.deepPurpleAccent),
-                                  border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.deepPurpleAccent)),
-                                ),
-                              ),
+                      key: _formKey,
+                      child: TextFormField(
+                        controller: _commetController,
+                        validator: (val) =>
+                            val!.isEmpty ? " Can't be empty" : null,
+                        decoration: InputDecoration(
+                          suffixIcon: MaterialButton(
+                            color: Colors.deepPurpleAccent,
+                            onPressed: () async {
+                              UserModel c = await UserLocalDataSourceImpl(
+                                      sharedPreferences: sl())
+                                  .getUser();
+                              var xid = Xid();
+                              var date = DateTime.now().toString();
+                              var dateParse = DateTime.parse(date);
+                              var formattedDate =
+                                  "${dateParse.day}-${dateParse.month}-${dateParse.year}";
+                              final isValid = _formKey.currentState!.validate();
+                              print(formattedDate);
+                              if (isValid) {
+                                BlocProvider.of<CommitBloc>(context).add(
+                                    AddCommitEvent(
+                                        commitModel: CommitModel(
+                                            commitId: "$xid",
+                                            userId: c.userId,
+                                            userImg: c.userImageUrl,
+                                            userName: c.userName,
+                                            bookId: book.bookId,
+                                            commit: _commetController.text,
+                                            commitDate: "$formattedDate")));
+                                _commetController.clear();
+                              }
+                            },
+                            child: Icon(
+                              Icons.send,
+                              color: Colors.white,
+                              size: 18,
                             ),
-                            SizedBox(
-                              width: 15,
-                            ),
-                            // Send Button
-                            MaterialButton(
-                              color: Colors.deepPurpleAccent,
-                              onPressed: () async {
-                                UserModel c = await UserLocalDataSourceImpl(
-                                        sharedPreferences: sl())
-                                    .getUser();
-                                var xid = Xid();
-                                var date = DateTime.now().toString();
-                                var dateParse = DateTime.parse(date);
-                                var formattedDate =
-                                    "${dateParse.day}-${dateParse.month}-${dateParse.year}";
-                                final isValid =
-                                    _formKey.currentState!.validate();
-                                print(formattedDate);
-                                if (isValid) {
-                                  BlocProvider.of<CommitBloc>(context).add(
-                                      AddCommitEvent(
-                                          commitModel: CommitModel(
-                                              commitId: "$xid",
-                                              userId: c.userId,
-                                              userImg: c.userImageUrl,
-                                              userName: c.userName,
-                                              bookId: book.bookId,
-                                              commit: _commetController.text,
-                                              commitDate: "$formattedDate")));
-                                  _commetController.clear();
-                                }
-                              },
-                              child: Icon(
-                                Icons.send,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                              // backgroundColor: ColorConstant.lightBlueA100,
-                              elevation: 0,
-                            ),
-                          ],
-                        ));
+                            // backgroundColor: ColorConstant.lightBlueA100,
+                            elevation: 0,
+                          ),
+                          hintText: "Add Reviwe...",
+                          hintStyle: TextStyle(color: Colors.deepPurpleAccent),
+                          border: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.deepPurpleAccent)),
+                        ),
+                      ),
+                    );
                   });
                 })),
           ),

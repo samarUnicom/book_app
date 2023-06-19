@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider(
               create: (_) =>
-                  di.sl<CommitBloc>()..add(GetCommitsEvent(comments: data))),
+                  di.sl<CommitBloc>()),
           BlocProvider(
               create: (_) => di.sl<BookBloc>()..add(GetAllBooksEvent())),
           BlocProvider(create: (_) => di.sl<UserBloc>()),

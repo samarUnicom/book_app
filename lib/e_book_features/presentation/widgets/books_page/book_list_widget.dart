@@ -17,8 +17,9 @@ import 'book_readers_row.dart';
 import 'message_display_widget.dart';
 
 class BooksListWidget extends StatefulWidget {
-  List<BookModel> books;UserModel user;
-  BooksListWidget({required this.books,required this.user});
+  List<BookModel> books;
+  UserModel user;
+  BooksListWidget({required this.books, required this.user});
 
   @override
   BooksListWidgetState createState() => BooksListWidgetState();
@@ -35,8 +36,6 @@ class BooksListWidgetState extends State<BooksListWidget> {
     _scrollPercentNotifier = ValueNotifier(0);
     _scrollController.addListener(_scrollListener);
   }
-
-
 
   @override
   void dispose() {
@@ -221,47 +220,32 @@ class _HomeBookCard extends StatelessWidget {
             heroTag: book.bookName,
           ),
         ),
-        BlocProvider(
-            create: (context) => CommitBloc(
-                getAllCommits: sl(),
-                addCommitUseCase: sl(),
-                initialCommitUseCase: sl())
-              ..add(GetBookCommitsEvent(book_id: book.bookId!)),
-            child: BlocBuilder<CommitBloc, CommitState>(
-              builder: (context, state) {
-                if (state is LoadingCommitState) {
-                  return LoadingWidget();
-                } else if (state is LoadedCommitState) {
-                  return ReadersRow(readers: state.commit);
-                } else if (state is ErrorCommitState) {
-                  return MessageDisplayWidget(message: state.message);
-                }
-                return LoadingWidget();
-              },
-            )),
+        buildCommit(context),
         SizedBox(height: 10.h),
       ],
     );
   }
 
-  List<CommitModel> data = [
-    CommitModel(
-        commitId: "2w",
-        commit: "bay",
-        userId: "1",
-        userName: "ali",
-        bookId: 1,
-        commitDate: "21-03-2022",
-        userImg:
-            "https://img.freepik.com/premium-photo/young-handsome-man-with-beard-isolated-keeping-arms-crossed-frontal-position_1368-132662.jpg"),
-    CommitModel(
-        commitId: "wq",
-        commit: "hi",
-        userId: "2",
-        userName: "samar",
-        bookId: 1,
-        commitDate: "21-03-2022",
-        userImg:
-            "https://img.freepik.com/premium-photo/young-handsome-man-with-beard-isolated-keeping-arms-crossed-frontal-position_1368-132662.jpg")
-  ];
+  buildCommit(context) {
+    BlocProvider.of<CommitBloc>(context)
+        .add(GetBookCommitsEvent(book_id: book.bookId!));
+    return BlocProvider(
+        create: (context) => CommitBloc(
+            getAllCommits: sl(),
+            addCommitUseCase: sl(),
+            initialCommitUseCase: sl())
+          ..add(GetBookCommitsEvent(book_id: book.bookId!)),
+        child: BlocBuilder<CommitBloc, CommitState>(
+          builder: (context, state) {
+            if (state is LoadingCommitState) {
+              return LoadingWidget();
+            } else if (state is LoadedCommitState) {
+              return ReadersRow(readers: state.commit);
+            } else if (state is ErrorCommitState) {
+              return MessageDisplayWidget(message: state.message);
+            }
+            return LoadingWidget();
+          },
+        ));
+  }
 }
